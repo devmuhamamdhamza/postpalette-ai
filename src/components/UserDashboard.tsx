@@ -269,6 +269,43 @@ const UserDashboard = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Connected Social Media Platforms */}
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Connected Social Media Platforms</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-sm font-bold">IG</span>
+                    </div>
+                    <span className="text-sm font-medium">Instagram</span>
+                  </div>
+                  <Badge className="bg-success/10 text-success border-success/20">Connected</Badge>
+                </div>
+                <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                      <span className="text-white text-sm font-bold">X</span>
+                    </div>
+                    <span className="text-sm font-medium">X (Twitter)</span>
+                  </div>
+                  <Badge className="bg-success/10 text-success border-success/20">Connected</Badge>
+                </div>
+                <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-sm font-bold">F</span>
+                    </div>
+                    <span className="text-sm font-medium">Facebook</span>
+                  </div>
+                  <Badge variant="outline">Not Connected</Badge>
+                </div>
+              </div>
+              <Button variant="outline" className="w-full mt-4">
+                Connect Social Media Accounts
+              </Button>
+            </Card>
+
             {/* Subscription Status */}
             <Card className="p-6">
               <div className="flex items-center gap-2 mb-4">
