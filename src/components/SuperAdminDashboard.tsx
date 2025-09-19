@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { 
   Users, 
   BarChart3, 
@@ -16,10 +17,24 @@ import {
   Calendar,
   FileText,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Bell,
+  LogOut,
+  ChevronDown,
+  Clock,
+  Edit
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import UserManagementModal from "./UserManagementModal";
+import AdminUserModal from "./AdminUserModal";
 
 const SuperAdminDashboard = () => {
+  const navigate = useNavigate();
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
+  const [adminModalMode, setAdminModalMode] = useState<'view' | 'add' | 'edit'>('view');
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   // Mock data for super admin
   const stats = {
     totalUsers: 247,
@@ -76,14 +91,28 @@ const SuperAdminDashboard = () => {
             <p className="text-muted-foreground">System-wide oversight and management</p>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="outline">
-              <FileText className="h-4 w-4 mr-2" />
-              Generate Report
+            <Button variant="outline" size="icon">
+              <Bell className="h-4 w-4" />
             </Button>
-            <Button className="btn-hero">
-              <UserPlus className="h-4 w-4 mr-2" />
-              Add Admin User
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Settings className="h-4 w-4" />
+                  <span className="hidden sm:inline">Admin</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate("/super-admin/settings")}>
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/login")}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -149,9 +178,10 @@ const SuperAdminDashboard = () => {
           {/* Main Content */}
           <div className="lg:col-span-2">
             <Tabs defaultValue="users" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="users">User Management</TabsTrigger>
                 <TabsTrigger value="admins">Admin Users</TabsTrigger>
+                <TabsTrigger value="tasks">Admin Tasks</TabsTrigger>
                 <TabsTrigger value="analytics">Analytics</TabsTrigger>
                 <TabsTrigger value="billing">Billing</TabsTrigger>
               </TabsList>
@@ -175,7 +205,14 @@ const SuperAdminDashboard = () => {
                           <Badge className={user.status === 'active' ? 'status-approved' : 'status-review'}>
                             {user.status}
                           </Badge>
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setIsUserModalOpen(true);
+                            }}
+                          >
                             Manage
                           </Button>
                         </div>
@@ -189,7 +226,14 @@ const SuperAdminDashboard = () => {
                 <Card className="p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-semibold">Admin Users</h3>
-                    <Button className="btn-hero">
+                    <Button 
+                      className="btn-hero"
+                      onClick={() => {
+                        setSelectedAdmin(null);
+                        setAdminModalMode('add');
+                        setIsAdminModalOpen(true);
+                      }}
+                    >
                       <UserPlus className="h-4 w-4 mr-2" />
                       Add Admin
                     </Button>
@@ -212,9 +256,62 @@ const SuperAdminDashboard = () => {
                             <p className="text-sm font-medium">{admin.tasksCompleted} tasks</p>
                             <Badge className="status-approved">Active</Badge>
                           </div>
-                          <Button variant="outline" size="sm">
-                            Edit
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => {
+                                setSelectedAdmin(admin);
+                                setAdminModalMode('view');
+                                setIsAdminModalOpen(true);
+                              }}
+                            >
+                              View
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => {
+                                setSelectedAdmin(admin);
+                                setAdminModalMode('edit');
+                                setIsAdminModalOpen(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="tasks" className="space-y-6">
+                <Card className="p-6">
+                  <h3 className="text-lg font-semibold mb-6">Admin Task Oversight</h3>
+                  <div className="space-y-4">
+                    {['Pending', 'Need Edits', 'Ready for User'].map(status => (
+                      <div key={status}>
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-medium">{status} Posts</h4>
+                          <Badge variant="outline">{status === 'Pending' ? 8 : status === 'Need Edits' ? 3 : 5}</Badge>
+                        </div>
+                        <div className="space-y-2">
+                          {[1, 2].map(task => (
+                            <div key={task} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                              <div>
+                                <p className="text-sm font-medium">Summer Campaign Post #{task}</p>
+                                <p className="text-xs text-muted-foreground">TechCorp Inc. • Instagram</p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-muted-foreground">
+                                  Assigned to: {task === 1 ? 'Sarah Johnson' : 'Mike Chen'}
+                                </span>
+                                <Clock className="h-4 w-4 text-muted-foreground" />
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     ))}
@@ -263,10 +360,6 @@ const SuperAdminDashboard = () => {
                       <p className="text-sm text-muted-foreground">Payment Success Rate</p>
                     </div>
                   </div>
-                  <Button className="btn-hero w-full">
-                    <FileText className="h-4 w-4 mr-2" />
-                    Generate Financial Report
-                  </Button>
                 </Card>
               </TabsContent>
             </Tabs>
@@ -317,30 +410,21 @@ const SuperAdminDashboard = () => {
               </div>
             </Card>
 
-            {/* Quick Actions */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Add Admin User
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Settings className="h-4 w-4 mr-2" />
-                  System Settings
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Export Data
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <AlertCircle className="h-4 w-4 mr-2" />
-                  View Logs
-                </Button>
-              </div>
-            </Card>
           </div>
         </div>
+
+        {/* Modals */}
+        <UserManagementModal 
+          isOpen={isUserModalOpen}
+          onClose={() => setIsUserModalOpen(false)}
+          user={selectedUser}
+        />
+        <AdminUserModal 
+          isOpen={isAdminModalOpen}
+          onClose={() => setIsAdminModalOpen(false)}
+          mode={adminModalMode}
+          admin={selectedAdmin}
+        />
       </div>
     </div>
   );

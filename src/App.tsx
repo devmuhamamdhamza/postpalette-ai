@@ -27,7 +27,8 @@ const App = () => (
           <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/super-admin" element={<SuperAdminDashboard />} />
-          <Route path="/settign" element={<Settings />} />
+        <Route path="/settign" element={<Settings />} />
+        <Route path="/super-admin/settings" element={<SuperAdminSettings />} />
           <Route path="/settign/profile" element={<Settings />} />
           <Route path="/settign/brand-assets" element={<Settings />} />
           <Route path="/settign/plan" element={<Settings />} />

@@ -19,15 +19,21 @@ import {
   BarChart3,
   User,
   LogOut,
-  ChevronDown
+  ChevronDown,
+  MessageSquare
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SchedulePostModal from "./SchedulePostModal";
+import FeedbackModal from "./FeedbackModal";
+import PostDetailsModal from "./PostDetailsModal";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [isPostDetailsModalOpen, setIsPostDetailsModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
 
   // Mock data
   const posts = [
@@ -207,10 +213,9 @@ const UserDashboard = () => {
           {/* Main Content */}
           <div className="lg:col-span-2">
             <Tabs defaultValue="calendar" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="calendar">Content Calendar</TabsTrigger>
                 <TabsTrigger value="posts">Post Status</TabsTrigger>
-                <TabsTrigger value="assets">Brand Assets</TabsTrigger>
               </TabsList>
 
               <TabsContent value="calendar" className="space-y-6">
@@ -282,7 +287,14 @@ const UserDashboard = () => {
 
               <TabsContent value="posts" className="space-y-4">
                 {posts.map(post => (
-                  <Card key={post.id} className="p-6 hover-lift">
+                  <Card key={post.id} className="p-6 hover-lift cursor-pointer" onClick={() => {
+                    setSelectedPost(post);
+                    if (post.status === 'draft' || post.status === 'approved') {
+                      setIsFeedbackModalOpen(true);
+                    } else if (post.status === 'scheduled' || post.status === 'review') {
+                      setIsPostDetailsModalOpen(true);
+                    }
+                  }}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         {getStatusIcon(post.status)}
@@ -298,31 +310,26 @@ const UserDashboard = () => {
                           <Badge variant="outline">{post.revisions} revisions</Badge>
                         )}
                         {getStatusBadge(post.status)}
+                        {(post.status === 'draft' || post.status === 'approved') && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedPost(post);
+                              setIsFeedbackModalOpen(true);
+                            }}
+                          >
+                            <MessageSquare className="h-4 w-4 mr-2" />
+                            Feedback
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </Card>
                 ))}
               </TabsContent>
 
-              <TabsContent value="assets">
-                <Card className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold">Brand Assets</h3>
-                    <Button variant="outline">
-                      <Upload className="h-4 w-4 mr-2" />
-                      Upload Assets
-                    </Button>
-                  </div>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    {['Logo.png', 'Brand Colors.pdf', 'Style Guide.pdf'].map(asset => (
-                      <div key={asset} className="p-4 border border-border rounded-lg hover:bg-accent/5 cursor-pointer">
-                        <FileText className="h-8 w-8 text-muted-foreground mb-2" />
-                        <p className="text-sm font-medium">{asset}</p>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              </TabsContent>
             </Tabs>
           </div>
 
@@ -406,31 +413,23 @@ const UserDashboard = () => {
               </div>
             </Card>
 
-            {/* Quick Actions */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Request New Content
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload Brand Assets
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <FileText className="h-4 w-4 mr-2" />
-                  View Reports
-                </Button>
-              </div>
-            </Card>
           </div>
         </div>
 
-        {/* Schedule Post Modal */}
+        {/* Modals */}
         <SchedulePostModal 
           isOpen={isScheduleModalOpen}
-          onClose={() => setIsScheduleModalOpen(false)}
+          onClose={() => setIsScheduleModalOpen(false)} 
+        />
+        <FeedbackModal 
+          isOpen={isFeedbackModalOpen}
+          onClose={() => setIsFeedbackModalOpen(false)}
+          post={selectedPost}
+        />
+        <PostDetailsModal 
+          isOpen={isPostDetailsModalOpen}
+          onClose={() => setIsPostDetailsModalOpen(false)}
+          post={selectedPost}
         />
       </div>
     </div>
