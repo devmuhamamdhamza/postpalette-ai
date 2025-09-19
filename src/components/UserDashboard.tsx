@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { 
   Calendar, 
   Plus, 
@@ -15,11 +16,18 @@ import {
   CreditCard,
   Bell,
   Settings,
-  BarChart3
+  BarChart3,
+  User,
+  LogOut,
+  ChevronDown
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import SchedulePostModal from "./SchedulePostModal";
 
 const UserDashboard = () => {
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
   // Mock data
   const posts = [
@@ -129,9 +137,25 @@ const UserDashboard = () => {
             <Button variant="outline" size="icon">
               <Bell className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon">
-              <Settings className="h-4 w-4" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">John Doe</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate("/settign")}>
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/login")}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button className="btn-hero">
               <Plus className="h-4 w-4 mr-2" />
               Request Content
@@ -192,31 +216,66 @@ const UserDashboard = () => {
               <TabsContent value="calendar" className="space-y-6">
                 <Card className="p-6">
                   <h3 className="text-lg font-semibold mb-4">Content Calendar</h3>
-                  <div className="grid grid-cols-7 gap-2 mb-4">
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                      <div key={day} className="p-3 text-center font-medium text-muted-foreground">
-                        {day}
+                  <div className="grid grid-cols-5 gap-4">
+                    {/* Calendar Section - First 4 columns */}
+                    <div className="col-span-3">
+                      <div className="grid grid-cols-7 gap-2 mb-4">
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                          <div key={day} className="p-2 text-center font-medium text-muted-foreground text-sm">
+                            {day}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                  <div className="grid grid-cols-7 gap-2">
-                    {Array.from({ length: 35 }, (_, i) => {
-                      const date = i + 1;
-                      const hasPost = date <= 20 && date % 3 === 0;
-                      return (
-                        <div 
-                          key={i} 
-                          className={`p-3 h-20 border rounded-lg cursor-pointer transition-colors hover:bg-accent/10 ${
-                            hasPost ? 'bg-accent/5 border-accent/20' : 'border-border'
-                          }`}
-                        >
-                          <div className="text-sm">{date <= 31 ? date : ''}</div>
-                          {hasPost && (
-                            <div className="w-2 h-2 bg-accent rounded-full mt-1"></div>
-                          )}
+                      <div className="grid grid-cols-7 gap-2">
+                        {Array.from({ length: 35 }, (_, i) => {
+                          const date = i + 1;
+                          const hasPost = date <= 20 && date % 3 === 0;
+                          const isSelected = date === 15;
+                          return (
+                            <div 
+                              key={i} 
+                              className={`p-2 h-16 border rounded-lg cursor-pointer transition-colors hover:bg-accent/10 ${
+                                isSelected ? 'bg-accent/20 border-accent' : 
+                                hasPost ? 'bg-accent/5 border-accent/20' : 'border-border'
+                              }`}
+                              onClick={() => setSelectedDate(new Date(2024, 0, date))}
+                            >
+                              <div className="text-sm">{date <= 31 ? date : ''}</div>
+                              {hasPost && (
+                                <div className="w-2 h-2 bg-accent rounded-full mt-1"></div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Events Section - Last 2 columns */}
+                    <div className="col-span-2">
+                      <Card className="p-4 h-full">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="font-medium">Jan 15, 2024</h4>
                         </div>
-                      );
-                    })}
+                        <div className="space-y-3 mb-4">
+                          <div className="p-3 bg-accent/5 border border-accent/20 rounded-lg">
+                            <p className="text-sm font-medium">Summer Campaign Launch</p>
+                            <p className="text-xs text-muted-foreground">Instagram • 9:00 AM</p>
+                          </div>
+                          <div className="p-3 bg-accent/5 border border-accent/20 rounded-lg">
+                            <p className="text-sm font-medium">Product Feature Post</p>
+                            <p className="text-xs text-muted-foreground">LinkedIn • 2:00 PM</p>
+                          </div>
+                        </div>
+                        <Button 
+                          className="w-full btn-hero" 
+                          size="sm"
+                          onClick={() => setIsScheduleModalOpen(true)}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Schedule Post
+                        </Button>
+                      </Card>
+                    </div>
                   </div>
                 </Card>
               </TabsContent>
@@ -367,6 +426,12 @@ const UserDashboard = () => {
             </Card>
           </div>
         </div>
+
+        {/* Schedule Post Modal */}
+        <SchedulePostModal 
+          isOpen={isScheduleModalOpen}
+          onClose={() => setIsScheduleModalOpen(false)}
+        />
       </div>
     </div>
   );

@@ -53,7 +53,7 @@ const Signup = () => {
   });
   const navigate = useNavigate();
 
-  const totalSteps = 7;
+  const totalSteps = 6;
 
   const plans = [
     {
@@ -371,37 +371,6 @@ const Signup = () => {
         );
         
       case 6:
-        return (
-          <div className="space-y-6">
-            <div>
-              <Label>Social Media Platforms</Label>
-              <p className="text-sm text-muted-foreground mb-4">
-                Select the platforms you want to connect. You can set these up later in your dashboard.
-              </p>
-              <div className="space-y-3">
-                {[
-                  { name: "Instagram", id: "instagram", icon: Instagram },
-                  { name: "Facebook", id: "facebook", icon: Facebook },
-                  { name: "X (Twitter)", id: "twitter", icon: () => <span className="font-bold">X</span> },
-                  { name: "LinkedIn", id: "linkedin", icon: () => <span className="font-bold">in</span> },
-                ].map((platform) => (
-                  <div key={platform.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <platform.icon className="h-6 w-6" />
-                      <span className="font-medium">{platform.name}</span>
-                    </div>
-                    <Checkbox 
-                      checked={formData.connectedPlatforms.includes(platform.id)}
-                      onCheckedChange={() => handleArrayToggle("connectedPlatforms", platform.id)}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        );
-        
-      case 7:
         return (
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
