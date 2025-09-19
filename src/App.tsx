@@ -7,7 +7,6 @@ import LandingPage from "./components/LandingPage";
 import UserDashboard from "./components/UserDashboard";
 import AdminDashboard from "./components/AdminDashboard";
 import SuperAdminDashboard from "./components/SuperAdminDashboard";
-import SuperAdminSettings from "./components/SuperAdminSettings"
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Settings from "./components/Settings";
@@ -28,8 +27,7 @@ const App = () => (
           <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/super-admin" element={<SuperAdminDashboard />} />
-        <Route path="/settign" element={<Settings />} />
-        <Route path="/super-admin/settings" element={<SuperAdminSettings />} />
+          <Route path="/settign" element={<Settings />} />
           <Route path="/settign/profile" element={<Settings />} />
           <Route path="/settign/brand-assets" element={<Settings />} />
           <Route path="/settign/plan" element={<Settings />} />

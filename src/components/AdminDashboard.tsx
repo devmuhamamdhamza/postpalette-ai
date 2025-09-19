@@ -16,11 +16,7 @@ import {
   History,
   RefreshCw,
   Filter,
-  Search,
-  Bell,
-  LogOut,
-  FileText,
-  MessageSquare
+  Search
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -131,12 +127,13 @@ const AdminDashboard = () => {
             <p className="text-muted-foreground">Review and manage content creation tasks</p>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="icon">
-              <Bell className="h-4 w-4" />
-            </Button>
             <Button variant="outline">
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
+              <Filter className="h-4 w-4 mr-2" />
+              Filter
+            </Button>
+            <Button className="btn-hero">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh Queue
             </Button>
           </div>
         </div>
@@ -236,14 +233,14 @@ const AdminDashboard = () => {
               <>
                 {/* Task Details */}
                 <Card className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Scheduled Post Details</h3>
+                  <h3 className="text-lg font-semibold mb-4">Task Details</h3>
                   <div className="space-y-3">
                     <div>
                       <span className="text-sm font-medium text-muted-foreground">Title:</span>
                       <p className="text-sm">{selectedTask.title}</p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-muted-foreground">Business:</span>
+                      <span className="text-sm font-medium text-muted-foreground">Client:</span>
                       <p className="text-sm">{selectedTask.client}</p>
                     </div>
                     <div>
@@ -255,18 +252,10 @@ const AdminDashboard = () => {
                       <p className="text-sm">{selectedTask.contentType}</p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-muted-foreground">Scheduled Date:</span>
-                      <p className="text-sm">{selectedTask.dueDate}</p>
-                    </div>
-                    <div>
                       <span className="text-sm font-medium text-muted-foreground">Priority:</span>
                       <p className={`text-sm capitalize ${getPriorityColor(selectedTask.priority)}`}>
                         {selectedTask.priority}
                       </p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium text-muted-foreground">Original Prompt:</span>
-                      <p className="text-sm bg-muted/30 p-2 rounded text-xs">{selectedTask.aiPrompt}</p>
                     </div>
                   </div>
                 </Card>
@@ -302,25 +291,11 @@ const AdminDashboard = () => {
 
                 {/* Content Preview & Actions */}
                 <Card className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">AI-Generated Content</h3>
+                  <h3 className="text-lg font-semibold mb-4">Content Preview</h3>
                   <div className="bg-muted/30 p-4 rounded-lg mb-4">
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-sm font-medium mb-2">Generated Text:</p>
-                        <p className="text-sm">
-                          🌟 Exciting summer vibes are here! Our latest innovation brings you closer to your goals with cutting-edge technology and seamless user experience. 
-                          
-                          Join thousands of satisfied customers who trust our solutions. #Innovation #Summer2024 #TechSolutions
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium mb-2">Media:</p>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <FileText className="h-4 w-4" />
-                          Canva design template generated
-                        </div>
-                      </div>
-                    </div>
+                    <p className="text-sm italic text-muted-foreground">
+                      AI-generated content would appear here...
+                    </p>
                   </div>
                   <div className="space-y-2">
                     <Button className="w-full btn-hero">
@@ -328,40 +303,14 @@ const AdminDashboard = () => {
                       Approve & Send to User
                     </Button>
                     <Button variant="outline" className="w-full">
+                      <AlertTriangle className="h-4 w-4 mr-2" />
+                      Request Changes
+                    </Button>
+                    <Button variant="outline" className="w-full">
                       <Eye className="h-4 w-4 mr-2" />
                       Preview in Canva
                     </Button>
                   </div>
-                </Card>
-
-                {/* Feedback & Revisions */}
-                <Card className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <MessageSquare className="h-5 w-5 text-accent" />
-                    <h3 className="text-lg font-semibold">User Feedback & Revisions</h3>
-                  </div>
-                  {selectedTask.revisionCount > 0 ? (
-                    <div className="space-y-3">
-                      <div className="p-3 bg-warning/10 border border-warning/20 rounded-lg">
-                        <p className="text-sm font-medium">Revision Request #{selectedTask.revisionCount}</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          "Please make the tone more professional and add statistics about our success rate. Also, the image should be more corporate-looking."
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-2">Requested 2 hours ago</p>
-                      </div>
-                      {selectedTask.revisionCount > 1 && (
-                        <div className="p-3 bg-muted/30 rounded-lg">
-                          <p className="text-sm font-medium">Previous Revision</p>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            "The colors don't match our brand guidelines. Please use our primary blue color."
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-2">Requested 1 day ago</p>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">No revision requests for this task.</p>
-                  )}
                 </Card>
 
                 {/* Revision History */}
