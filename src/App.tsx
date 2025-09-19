@@ -7,7 +7,7 @@ import LandingPage from "./components/LandingPage";
 import UserDashboard from "./components/UserDashboard";
 import AdminDashboard from "./components/AdminDashboard";
 import SuperAdminDashboard from "./components/SuperAdminDashboard";
-import SuperAdminSettings from "/components/SuperAdminSettings"
+import SuperAdminSettings from "./components/SuperAdminSettings"
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Settings from "./components/Settings";
